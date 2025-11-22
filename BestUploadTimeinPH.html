@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Upload Schedules</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #b3b3b3; 
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1440px;
+      margin: auto;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 28px;
+    }
+
+    .tabs {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .tab-btn {
+      padding: 10px 20px;
+      border: none;
+      background: #ddd;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .tab-btn.active {
+      background: #007bff;
+      color: white;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .card {
+      flex: 1;
+      min-width: 280px;
+      max-width: 360px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+      padding: 15px;
+    }
+
+    h2 {
+      margin: 0 0 5px;
+      font-size: 16px;
+    }
+
+    .description {
+      font-size: 13px;
+      color: #777;
+      margin-bottom: 12px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    td {
+      padding: 8px 6px;
+      font-size: 14px;
+    }
+
+    td:nth-child(2) {
+      text-align: center;
+      color: #27ae60;
+      font-weight: bold;
+    }
+
+    td:last-child {
+      text-align: right;
+      font-size: 12px;
+      color: #e67e22;
+    }
+
+    .highlight {
+      background: #eaf4ff;
+      border-left: 4px solid #007bff;
+      font-weight: bold;
+    }
+
+    @media (max-width: 768px) {
+      .row {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>📅 Upload Schedules </h1>
+  
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('us')">🇺🇸 U.S Target (PH Upload)</button>
+    <button class="tab-btn" onclick="showTab('ph')">🇵🇭 PH Target (PH Upload)</button>
+  </div>
+  <p style="text-align: center;">by: Lowkey</p>
+
+  <!-- US Tab Content -->
+  <div class="tab-content active" id="tab-us">
+    <div class="row">
+      <div class="card">
+        <h2>Best Overall</h2>
+        <p class="description">Maximize reach with American viewers.</p>
+        <table id="us-overall"></table>
+      </div>
+      <div class="card">
+        <h2>Night Best Time</h2>
+        <p class="description">Great for night scrollers in the U.S.</p>
+        <table id="us-night"></table>
+      </div>
+      <div class="card">
+        <h2>Morning Best Time(Recommended also)</h2>
+        <p class="description">For early U.S. risers and coffee surfers.</p>
+        <table id="us-morning"></table>
+      </div>
+
+      <div class="card">
+        <h2>My Costume1 upload time</h2>
+        <p class="description">For  U.S. risers viewers.</p>
+        <table id="costume1"></table>
+      </div>
+      <div class="card">
+        <h2>My Costume2 upload time (current use)</h2>
+        <p class="description">For  U.S. risers viewers.(base on my niche)</p>
+        <table id="costume2"></table>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PH Tab Content -->
+  <div class="tab-content" id="tab-ph">
+    <div class="row">
+      <div class="card">
+        <h2>Best Overall</h2>
+        <p class="description">Target peak hours for Pinoy audiences.</p>
+        <table id="ph-overall"></table>
+      </div>
+      <div class="card">
+        <h2>Night Best Time</h2>
+        <p class="description">Perfect for (scary, creepy niche) chill night scrolling.</p>
+        <table id="ph-night"></table>
+      </div>
+      <div class="card">
+        <h2>Morning Best Time</h2>
+        <p class="description">Capture attention during morning routines.</p>
+        <table id="ph-morning"></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const today = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Manila" }));
+  const todayName = today.toLocaleString("en-US", { weekday: 'long' });
+  const dateStr = today.toLocaleString("en-PH", { month: "short", day: "numeric" });
+
+  const scheds = {
+  "us-overall": {
+    Monday: "12:00 AM",
+    Tuesday: "12:15 AM",
+    Wednesday: "12:30 AM",
+    Thursday: "12:15 AM",
+    Friday: "12:00 AM",
+    Saturday: "11:30 PM",
+    Sunday: "11:45 PM"
+  },
+  "us-night": {
+    Monday: "9:30 PM",
+    Tuesday: "9:45 PM",
+    Wednesday: "9:30 PM",
+    Thursday: "9:45 PM",
+    Friday: "10:00 PM",
+    Saturday: "10:15 PM",
+    Sunday: "9:45 PM"
+  },
+  "us-morning": {
+    Monday: "7:30 AM",
+    Tuesday: "7:45 AM",
+    Wednesday: "7:30 AM",
+    Thursday: "7:45 AM",
+    Friday: "7:30 AM",
+    Saturday: "8:00 AM",
+    Sunday: "8:15 AM"
+  },
+   "costume1": {
+    Monday: "12:30 AM",
+    Tuesday: "01:00 AM",
+    Wednesday: "02:30 AM",
+    Thursday: "03:00 AM",
+    Friday: "12:15 AM",
+    Saturday: "01:30 AM",
+    Sunday: "02:00 AM"
+  },
+    "costume2": {
+    Monday: "05:00 AM",
+    Tuesday: "06:00 AM",
+    Wednesday: "06:30 AM",
+    Thursday: "06:00 AM",
+    Friday: "05:30 AM",
+    Saturday: "05:00 AM",
+    Sunday: "06:00 AM"
+  },
+
+
+
+
+  "ph-overall": {
+    Monday: "6:00 PM",
+    Tuesday: "6:15 PM",
+    Wednesday: "6:00 PM",
+    Thursday: "6:15 PM",
+    Friday: "6:30 PM",
+    Saturday: "5:30 PM",
+    Sunday: "5:45 PM"
+  },
+  "ph-night": {
+    Monday: "10:00 PM",
+    Tuesday: "10:15 PM",
+    Wednesday: "10:00 PM",
+    Thursday: "10:15 PM",
+    Friday: "10:30 PM",
+    Saturday: "10:30 PM",
+    Sunday: "10:15 PM"
+  },
+  "ph-morning": {
+    Monday: "8:00 AM",
+    Tuesday: "8:15 AM",
+    Wednesday: "8:00 AM",
+    Thursday: "8:15 AM",
+    Friday: "8:30 AM",
+    Saturday: "8:30 AM",
+    Sunday: "8:15 AM"
+  }
+};
+
+  function renderTable(id, data) {
+    const table = document.getElementById(id);
+    Object.entries(data).forEach(([day, time]) => {
+      const tr = document.createElement('tr');
+      if (day === todayName) tr.classList.add('highlight');
+      tr.innerHTML = `
+        <td>${day}</td>
+        <td>${time} </td>
+        <td>${day === todayName ? '(PH-Time) &lt;' + dateStr : ''}</td>
+      `;
+      table.appendChild(tr);
+    });
+  }
+
+  for (const [id, data] of Object.entries(scheds)) {
+    renderTable(id, data);
+  }
+
+  function showTab(which) {
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+    document.querySelector(`.tab-btn[onclick*="${which}"]`).classList.add('active');
+    document.getElementById(`tab-${which}`).classList.add('active');
+  }
+</script>
+
+</body>
+</html>
